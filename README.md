@@ -55,17 +55,17 @@ python <path_to_drdoc>/drdoc.py <doc_path> [options]
 
 ### Command Line Options
 
-- `doc_path`: Path to the documentation file or directory containing files to process.
+- `doc_path`: (Required) Path to the documentation file or directory containing files to process.
 - `--argo_url`: (Optional) Argo API endpoint URL (default: value of `ARGO_URL` environment variable).
 - `--argo_user`: (Optional) Argo API user (default: value of `ARGO_USER` environment variable).
-- `--model`: Model to use (e.g., `gpt4o`, `gpt35`; default: `gpt4o`).
-- `--temperature`: Sampling temperature for the model (default: 0.1).
-- `--top_p`: Top-p sampling for the model (default: 0.9).
-- `--max_tokens`: Max tokens for the prompt (default: 4096).
-- `--max_completion_tokens`: Max tokens for the completion (default: 16000).
-- `--inplace`: Modify the original file in place instead of creating a new one.
-- `--commit`: Commit changes to Git with the explanation as the commit message.
-- `--format`: Format of the documentation file (`md`, `rst`, or `txt`; default: `md`).
+- `--model`: (Optional) Model to use (e.g., `gpt4o`, `gpt35`; default: `gpt4o`).
+- `--temperature`: (Optional) Sampling temperature for the model (default: 0.1).
+- `--top_p`: (Optional) Top-p sampling for the model (default: 0.9).
+- `--max_tokens`: (Optional) Max tokens for the prompt (default: 4096).
+- `--max_completion_tokens`: (Optional) Max tokens for the completion (default: 16000).
+- `--inplace`: (Optional) Modify the original file in place instead of creating a new one.
+- `--commit`: (Optional) Commit changes to Git with the explanation as the commit message.
+- `--format`: (Optional) Format of the documentation file (`md`, `rst`, or `txt`; default: `md`).
 
 ### Example Commands
 
