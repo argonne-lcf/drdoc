@@ -27,7 +27,7 @@ Response Format
 
 - If no changes are required, respond with:  "No changes required".
 - If changes are required, structure your response in two parts, separated by SEPARATOR on a new line:  
-  1. In the first part provide the corrected Markdown content.  
+  1. Apply the suggested changes and provide the corrected Markdown content in the first part.  
   2. In the second part provide a brief explanation of the changes, formatted like a git commit message.
 
 Example Response
@@ -192,7 +192,7 @@ def process_documentation_file(file_path, args):
         fixed_md = res_parts[0].strip()
         explanation = res_parts[1].strip()
         if fixed_md == content:
-            print(f"No changes required but with an explanation:\n {explanation}")
+            print(f"No changes applied, but there are suggestions:\n{explanation}")
         else:
             # Write the markdown content to the original file or a new file
             if args.inplace:
