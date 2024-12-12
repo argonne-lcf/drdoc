@@ -6,7 +6,8 @@ import time
 import subprocess
 
 PROMPT = """
-Please review the following Markdown file for errors and improvements:
+You are tasked with reviewing and improving the following Markdown file. 
+Follow the instructions carefully and provide a structured response with the format described in Response Format section.
 
 CONTENT
 
@@ -26,8 +27,8 @@ Response Format
 
 - If no changes are required, respond with:  "No changes required".
 - If changes are required, structure your response in two parts, separated by SEPARATOR on a new line:  
-  1. The revised Markdown content.  
-  2. A brief explanation of the changes, formatted like a git commit message.
+  1. In the first part provide the corrected Markdown content.  
+  2. In the second part provide a brief explanation of the changes, formatted like a git commit message.
 
 Example Response
 
@@ -203,7 +204,9 @@ def process_documentation_file(file_path, args):
                     subprocess.run(["git", "add", file_path], check=True)
                     print(f"Added {file_path}")
                     subprocess.run(["git", "commit", "-m", commit_message], check=True)
-                    print(f"Changes committed with git: {commit_message}")
+                    print(f"Changes committed with git.")
+                print(f"Commit message:\n {commit_message}")
+
             else:
                 fixed_md_file = prepend_filename_with_fixed(file_path)
                 with open(fixed_md_file, "w", encoding="utf-8") as f:
