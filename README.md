@@ -1,6 +1,6 @@
 # Dr. Doc
 
-Dr. Doc is currently a toy but a useful project to improve documentation files by identifying and correcting grammar, formatting errors, and broken links using large language models. Currently, this project uses the **Argo API**, which provides access to OpenAI models for Argonne researchers. Future updates will include support for other models, structured output to simplify prompts as well as GitHub and GitLab actions for continuous integration.
+Dr. Doc is currently a toy but useful project to improve documentation files by identifying and correcting grammar, formatting errors, and broken links using large language models. Currently, this project uses the **Argo API**, which provides access to OpenAI models for Argonne researchers. Future updates will include support for other models, structured output to simplify prompts, as well as GitHub and GitLab actions for continuous integration.
 
 ## Features
 
@@ -30,18 +30,23 @@ Dr. Doc is currently a toy but a useful project to improve documentation files b
    export ARGO_URL=<your-argo-url>
    export ARGO_USER=<your-argo-user>
    ```
-3. (Optional) Install the package
+
+3. (Optional) Install the package:
+
    ```bash
    pip install -e .
    ```
+
 ## Usage
 
-If you have installed Dr Doc with pip as described above, you can run it with `drdoc` (`drdoc -h` for help menu). If not, you need to run the python script, with `python <path_to_drdoc>/drdoc.py`.
+If you have installed Dr. Doc with pip as described above, you can run it with `drdoc` (`drdoc -h` for help menu). If not, you need to run the Python script with `python <path_to_drdoc>/drdoc.py`.
 
 ```bash
 drdoc <doc_path> [options]
 ```
+
 or without installation:
+
 ```bash
 python <path_to_drdoc>/drdoc.py <doc_path> [options]
 ```
@@ -63,22 +68,27 @@ python <path_to_drdoc>/drdoc.py <doc_path> [options]
 ### Example Commands
 
 #### Process a Markdown file:
+
 ```bash
 drdoc doc/sample.md
 ```
+
 This would create `docs/sample_fixed.md`.
 
-#### Process all ReStructuredText documentation files ( `*.rst` files) in `doc` directory:
+#### Process all ReStructuredText documentation files (`*.rst` files) in the `doc` directory:
+
 ```bash
 drdoc doc/ --format rst
 ```
 
 #### Process a file and modify it in-place:
+
 ```bash
 drdoc doc/sample.md --inplace
 ```
 
 #### Process a file in place and commit changes (you need to run it inside the git project):
+
 ```bash
 cd <your_git_repo>
 drdoc README.md --inplace --commit
@@ -88,7 +98,7 @@ drdoc README.md --inplace --commit
 
 - Add support for LangChain to use other models.
 - Optionally ask for confirmation for each change.
-- Enable using ALCF inference end points.
+- Enable using ALCF inference endpoints.
 - Add GitHub and GitLab actions to process documentation files for CI.
 - Improve the prompts and user experience with feedback.
 
