@@ -58,6 +58,31 @@ Provide a brief explanation of the changes made in a typical git commit format, 
 """
 
 
+def estimate_tokens(text: str) -> int:
+    """Estimate the number of tokens in a text string.
+
+    This is a rough estimation based on the observation that tokens are
+    approximately 4 characters on average in English text.
+
+    Parameters
+    ----------
+    text : str
+        The input text string
+
+    Returns
+    -------
+    int
+        Estimated number of tokens
+
+    Examples
+    --------
+    >>> estimate_tokens("Hello world!")
+    3
+    """
+    # Use average of 4 characters per token for rough estimation
+    return max(1, len(text) // 4)
+
+
 def prepend_filename_with_fixed(file_path):
     """Create a new file path by prepending '_fixed' to the filename.
 
@@ -97,6 +122,13 @@ def process_documentation_file(file_path, args):
     # Function to process a single documentation file
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
+    ntoken = max(1, len(content) // 4) + 500
+    print(f"Estimated number of output tokens for {filename}: {ntoken}")
+    if ntoken > args.max_tokens:
+        print(
+            f"{filename} is too large to process with {args.model}, max output token size for this model is {args.max_tokens}"
+        )
+        return
 
     prompt = PROMPT.replace("CONTENT", content)
     separator = args.separator
@@ -157,24 +189,31 @@ def process_documentation_file(file_path, args):
     res_parts = res.split(separator)
     if len(res_parts) == 2:
         fixed_md = res_parts[0].strip()
-        # Write the markdown content to the original file or a new file
-        if args.inplace:
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(fixed_md)
-            print(f"Documentation file modified inplace at: {file_path}")
-        else:
-            fixed_md_file = prepend_filename_with_fixed(file_path)
-            with open(fixed_md_file, "w", encoding="utf-8") as f:
-                f.write(fixed_md)
-            print(f"Improved documentation file written at: {fixed_md_file}")
         explanation = res_parts[1].strip()
-        print(f"Updates for {filename} with {args.model}: \n{explanation}")
+        if fixed_md == content:
+            print(f"No changes required but with an explanation:\n {explanation}")
+        else:
+            # Write the markdown content to the original file or a new file
+            if args.inplace:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(fixed_md)
+                print(f"Documentation file modified inplace at: {file_path}")
+                if args.commit:
+                    commit_message = f"Dr. Doc updates for {filename} with {args.model}\n\n{explanation}"
+                    subprocess.run(["git", "add", file_path], check=True)
+                    print(f"Added {file_path}")
+                    subprocess.run(["git", "commit", "-m", commit_message], check=True)
+                    print(f"Changes committed with git: {commit_message}")
+            else:
+                fixed_md_file = prepend_filename_with_fixed(file_path)
+                with open(fixed_md_file, "w", encoding="utf-8") as f:
+                    f.write(fixed_md)
+                print(f"Updated documentation file written at: {fixed_md_file}")
+                print(f"Explanation of the changes with {args.model}:\n\n{explanation}")
 
-        if args.commit:
-            commit_message = f"Updates for {filename} with {args.model} \n{explanation}"
-            subprocess.run(["git", "add", file_path], check=True)
-            subprocess.run(["git", "commit", "-m", explanation], check=True)
-            print("Changes committed to Git.")
+    elif len(res_parts) == 1:
+        if "No changes required" in res_parts[0]:
+            print(f"No changes required for {filename}")
     else:
         print("*" * 25)
         print(f" Problem detected, please check response:\n{res}")
@@ -210,7 +249,7 @@ def main():
         "--top_p", type=float, default=0.9, help="Top-p sampling for the model."
     )
     parser.add_argument(
-        "--max_tokens", type=int, default=16000, help="Max tokens for the prompt."
+        "--max_tokens", type=int, default=4096, help="Max output tokens for the model."
     )
     parser.add_argument(
         "--max_completion_tokens",
