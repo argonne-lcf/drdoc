@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drdoc"
+version = "0.1.0"
+description = "A documentation processing tool for identifying and correcting errors in markdown, reStructuredText, and plain text files"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"} 
+authors = [
+    {name = "Murat Keceli", email = "your.email@example.com"}
+]
+keywords = ["documentation", "markdown", "rst", "text-processing", "ai-assisted-editing"]
+
+dependencies = [
+    "requests>=2.25.0",
+    "argparse",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "flake8",
+]
+
+[project.scripts]
+drdoc = "drdoc.drdoc:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/drdoc"
+Repository = "https://github.com/yourusername/drdoc"
+
+[tool.setuptools]
+packages = ["drdoc"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
