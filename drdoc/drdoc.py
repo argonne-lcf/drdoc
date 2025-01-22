@@ -21,7 +21,8 @@ Your task is to review and improve the provided Markdown file as follows:
 2. Broken Links: Verify all links and fix any that are broken.
 3. Formatting: Address any formatting issues to ensure consistency and readability.
 4. Headers: Do not modify anchor tags within headers.
-5. Explanations: Provide a brief explanation of the changes you made.
+5. Whitespace: Do not suggest changes to whitespace that would not result in a different rendered output
+6. Explanations: Provide a brief explanation of the changes you made.
 
 Response Format
 
@@ -281,6 +282,12 @@ def main():
         default="------SEPARATOR------",
         help="Separator string to use between content and explanation.",
     )
+    parser.add_argument(
+        "--exclude",
+        nargs="*",
+        default=[],
+        help="List of directories or files to exclude from processing.",
+    )
 
     # Parse arguments
     args = parser.parse_args()
@@ -290,17 +297,28 @@ def main():
 
 
 def process_main(args):
-    # Move the existing main logic here
+    # Convert exclude list to a set for faster lookup
+    exclude_set = set(args.exclude)
+
     if os.path.isdir(args.doc_path):
         # If the path is a directory, search for documentation files recursively
         for root, _, files in os.walk(args.doc_path):
+            # Skip directories that are in the exclude list
+            if any(excluded in root for excluded in exclude_set):
+                continue
+
             for file in files:
+                # Skip files that are in the exclude list
+                if file in exclude_set:
+                    continue
+
                 if file.endswith(f".{args.format}"):  # Check for supported formats
                     file_path = os.path.join(root, file)
                     process_documentation_file(file_path, args)
     else:
         # Process a single documentation file
-        process_documentation_file(args.doc_path, args)
+        if os.path.basename(args.doc_path) not in exclude_set:
+            process_documentation_file(args.doc_path, args)
 
 
 if __name__ == "__main__":
